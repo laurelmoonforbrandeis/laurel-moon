@@ -1,0 +1,138 @@
+---
+layout: base.njk
+permalink: /
+---
+{%- from "partials/macros.njk" import poem, cover, icon, sprig, stars -%}
+{%- set newest = collections.issuesNewest | first -%}
+{%- set issuePieces = (collections.pieces | piecesFor(newest.url)) if newest else [] -%}
+{%- set feature = issuePieces | featuredPiece -%}
+{%- set olderIssues = collections.issuesNewest | take(6, 1) -%}
+{%- set events = calendar.events | sortEvents -%}
+
+<section class="hero" aria-labelledby="hero-title">
+  {{ stars() }}
+  <div class="wrap hero-inner">
+    <div class="hero-text">
+      {%- if feature %}
+      <p class="hero-kicker">{{ feature.genre | featureLabel }} from the {{ newest.data.title }} issue</p>
+      <h1 id="hero-title" class="hero-title">{{ feature.title }}</h1>
+      <p class="byline">by {{ feature.author }}{% if feature.school %}, {{ feature.school }}{% endif %}</p>
+      {%- if feature.genre == "Art" and feature.image %}
+      <img class="hero-image" src="{{ feature.image }}" alt="{{ feature.image_alt }}">
+      {%- elif feature.genre == "Prose" %}
+      <p class="hero-prose">{{ feature.text | excerptWords(70) }}</p>
+      {%- else %}
+      {{ poem(feature.text, 6, "hero-poem") }}
+      {%- endif %}
+      <div class="btn-row">
+        <a class="btn btn--moon" href="{{ feature.url }}">{% if feature.genre == "Art" %}See the full piece{% else %}Continue reading{% endif %}</a>
+        <a class="btn btn--ghost-light" href="{{ newest.url }}">Open the {{ newest.data.title }} issue</a>
+      </div>
+      {%- else %}
+      <h1 id="hero-title" class="hero-title">{{ site.name }}</h1>
+      <p class="hero-prose">{{ site.tagline }}</p>
+      {%- endif %}
+    </div>
+    <div class="hero-moon" aria-hidden="true">
+      <span class="moon moon--ring"></span>
+      {{ sprig() }}
+    </div>
+  </div>
+</section>
+
+{%- if newest %}
+<section class="section" aria-labelledby="current-title">
+  <div class="wrap issue-feature">
+    <a class="issue-feature-cover" href="{{ newest.url }}" aria-label="Open the {{ newest.data.title }} issue">{{ cover(newest, "cover--lg") }}</a>
+    <div class="issue-feature-text">
+      <h2 id="current-title" class="display h-section">The {{ newest.data.title }} issue</h2>
+      {%- if newest.data.intro %}<p class="lede">{{ newest.data.intro }}</p>{% endif %}
+      {%- if issuePieces.length %}
+      <h3 class="small-heading">In this issue</h3>
+      <ul class="toc">
+        {%- for p in issuePieces | take(5) %}
+        <li><a class="toc-title" href="{{ p.url }}">{{ p.title }}</a><span class="toc-meta"><span>{{ p.author }}</span><span class="toc-genre">{{ p.genre }}</span></span></li>
+        {%- endfor %}
+      </ul>
+      <p class="more-link"><a href="{{ newest.url }}#contents">See the full table of contents</a></p>
+      {%- endif %}
+      <div class="btn-row">
+        <a class="btn btn--laurel" href="{{ newest.url }}">Read the issue</a>
+        {%- if newest.data.pdf %}<a class="btn btn--outline" href="{{ newest.data.pdf }}" download>{{ icon("download") }}Download the PDF</a>{% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{%- endif %}
+
+{%- if olderIssues.length %}
+<section class="section section--flush-top" aria-labelledby="back-title">
+  <div class="wrap">
+    <div class="section-head section-head--divided">
+      <div>
+        <h2 id="back-title" class="display h-section">Back issues</h2>
+        <p class="lede">A new issue every semester since fall 1991.</p>
+      </div>
+      <a class="btn btn--outline" href="/archive/">Browse the full archive</a>
+    </div>
+    <ul class="issue-grid">
+      {%- for issue in olderIssues %}
+      <li><a class="issue-card" href="{{ issue.url }}">{{ cover(issue, "cover--sm") }}<span class="issue-card-name">{{ issue.data.title }}</span></a></li>
+      {%- endfor %}
+    </ul>
+  </div>
+</section>
+{%- endif %}
+
+<section id="submit" class="band-laurel" aria-labelledby="submit-title">
+  <div class="wrap band-inner">
+    <div class="band-text">
+      {%- if submissions.open %}
+      <h2 id="submit-title" class="display h-section">Send us your work for the {{ submissions.issue_name }} issue</h2>
+      <p class="band-lede">{{ submissions.intro }}</p>
+      <div class="btn-row">
+        <a class="btn btn--moon" href="{{ submissions.submit_url or '/submit/' }}">Submit your work</a>
+        <a class="btn btn--ghost-light" href="/submit/#guidelines">Read the guidelines</a>
+      </div>
+      {%- else %}
+      <h2 id="submit-title" class="display h-section">Submissions are closed for now</h2>
+      <p class="band-lede">{{ submissions.closed_message }}</p>
+      <div class="btn-row"><a class="btn btn--ghost-light" href="/submit/#guidelines">Read the guidelines</a></div>
+      {%- endif %}
+    </div>
+    {%- if submissions.open %}
+    <dl class="facts">
+      {%- if submissions.poetry_limit %}<div><dt>Poetry</dt><dd>{{ submissions.poetry_limit }}</dd></div>{% endif %}
+      {%- if submissions.prose_limit %}<div><dt>Prose</dt><dd>{{ submissions.prose_limit }}</dd></div>{% endif %}
+      {%- if submissions.art_limit %}<div><dt>Art</dt><dd>{{ submissions.art_limit }}</dd></div>{% endif %}
+      {%- if submissions.deadline %}<div><dt>Deadline</dt><dd>{{ submissions.deadline }}</dd></div>{% endif %}
+    </dl>
+    {%- endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap two-col">
+    <div id="about">
+      <h2 class="display h-sub">About {{ site.name }}</h2>
+      <p class="body-lg">{{ site.about_short }}</p>
+      {%- if site.meetings %}<p class="body-lg">Want to help read submissions and build the issue? {{ site.meetings }}</p>{% endif %}
+      <p class="more-link"><a href="/about/">Meet the staff</a></p>
+    </div>
+    <div id="events">
+      <h2 class="display h-sub">Readings and events</h2>
+      {%- if events.length %}
+      <ul class="events" data-events>
+        {%- for e in events %}
+        <li data-event-date="{{ e.date | eventIso }}">
+          <h3>{% if e.link %}<a href="{{ e.link }}">{{ e.name }}</a>{% else %}{{ e.name }}{% endif %}</h3>
+          <p class="event-meta"><time datetime="{{ e.date | eventIso }}">{{ e.date | eventWhen }}</time>{% if e.location %} at {{ e.location }}{% endif %}</p>
+          {%- if e.details %}<p class="event-details">{{ e.details }}</p>{% endif %}
+        </li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+      <p class="events-empty" data-events-empty{% if events.length %} hidden{% endif %}>No events are scheduled right now. Follow us on Instagram to hear about the next reading.</p>
+    </div>
+  </div>
+</section>

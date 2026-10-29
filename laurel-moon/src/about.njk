@@ -1,0 +1,35 @@
+---
+layout: base.njk
+title: About
+permalink: /about/
+---
+<section class="page-head" aria-labelledby="about-title">
+  <div class="wrap wrap--narrow">
+    <h1 id="about-title" class="page-title page-title--md">About {{ site.name }}</h1>
+    <div class="prose prose--lead">{{ site.about | md | safe }}</div>
+  </div>
+</section>
+
+<section id="staff" class="band-soft" aria-labelledby="staff-title">
+  <div class="wrap wrap--mid">
+    <h2 id="staff-title" class="display h-sub">Our staff</h2>
+    {%- if site.meetings %}<p class="lede">Want to help read submissions and build the issue? {{ site.meetings }}</p>{% endif %}
+    {%- if masthead.roles and masthead.roles.length %}
+    <dl class="staff-list">
+      {%- for s in masthead.roles %}
+      <div><dt>{{ s.role }}</dt><dd>{{ s.names }}</dd></div>
+      {%- endfor %}
+    </dl>
+    {%- endif %}
+  </div>
+</section>
+
+<section class="section" aria-labelledby="contact-title">
+  <div class="wrap wrap--narrow">
+    <h2 id="contact-title" class="display h-sub">Get in touch</h2>
+    <p class="body-lg">
+      {%- if "@" in site.email %}Email us at <a href="mailto:{{ site.email }}">{{ site.email }}</a>{% else %}Email us at {{ site.email }}{% endif %}
+      {%- if site.instagram_handle %} or find us on Instagram at {% if site.instagram_url %}<a href="{{ site.instagram_url }}">{{ site.instagram_handle }}</a>{% else %}{{ site.instagram_handle }}{% endif %}{% endif %}.
+    </p>
+  </div>
+</section>

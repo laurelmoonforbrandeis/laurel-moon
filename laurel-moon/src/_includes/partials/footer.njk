@@ -1,0 +1,49 @@
+{%- set newestIssue = collections.issuesNewest | first -%}
+<footer class="site-footer">
+  <div class="wrap footer-top">
+    <div class="footer-brand">
+      <p class="footer-wordmark"><span class="moon footer-moon" aria-hidden="true"></span><span>{{ site.name }}</span></p>
+      <p class="footer-tagline">{{ site.tagline }}</p>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <div>
+        <h2>Read</h2>
+        <ul>
+          {%- if newestIssue %}<li><a href="{{ newestIssue.url }}">Current issue</a></li>{% endif %}
+          <li><a href="/archive/">Archive</a></li>
+          <li><a href="/#events">Events</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Contribute</h2>
+        <ul>
+          <li><a href="/submit/">Submit your work</a></li>
+          <li><a href="/submit/#guidelines">Guidelines</a></li>
+          <li><a href="/about/#staff">Join the staff</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="footer-news">
+      <form class="newsletter" name="newsletter" method="POST" action="/subscribed/" data-netlify="true" netlify-honeypot="bot-field">
+        <h2>Get each new issue by email</h2>
+        <input type="hidden" name="form-name" value="newsletter">
+        <p class="visually-hidden"><label>Leave this empty: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <label for="newsletter-email">Email address</label>
+        <div class="newsletter-row">
+          <input id="newsletter-email" type="email" name="email" autocomplete="email" required placeholder="you@brandeis.edu">
+          <button class="btn btn--moon" type="submit">Subscribe</button>
+        </div>
+      </form>
+      <p class="footer-contact">
+        {%- if site.instagram_handle %}Instagram {% if site.instagram_url %}<a href="{{ site.instagram_url }}">{{ site.instagram_handle }}</a>{% else %}{{ site.instagram_handle }}{% endif %}<br>{% endif %}
+        {%- if site.email %}Email {% if "@" in site.email %}<a href="mailto:{{ site.email }}">{{ site.email }}</a>{% else %}{{ site.email }}{% endif %}{% endif %}
+      </p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="footer-bottom">
+      <p>&copy; {% year %} {{ site.name }}. A Brandeis University student organization.</p>
+      <p><a href="/admin/">Editor login</a></p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,87 @@
+---
+layout: base.njk
+---
+{%- from "partials/macros.njk" import cover, icon -%}
+{%- set issuePieces = collections.pieces | piecesFor(page.url) -%}
+{%- set thisIssue = collections.issues | getCollectionItem(page) -%}
+{%- set olderIssue = collections.issues | getPreviousCollectionItem(page) -%}
+{%- set newerIssue = collections.issues | getNextCollectionItem(page) -%}
+
+<section class="page-head" aria-labelledby="issue-title">
+  <div class="wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/archive/">Archive</a><span aria-hidden="true">/</span><span aria-current="page">{{ title }}</span></nav>
+    <div class="issue-head">
+      <div class="issue-head-text">
+        <h1 id="issue-title" class="page-title">{{ title }}</h1>
+        {%- if subtitle %}<p class="subtitle">{{ subtitle }}</p>{% endif %}
+        <p class="meta-line">Published {{ page.date | monthYear }}</p>
+        {%- if editors %}<p class="meta-line meta-line--tight">Edited by {{ editors }}</p>{% endif %}
+        <div class="btn-row">
+          {%- if issuePieces.length %}<a class="btn btn--laurel" href="{{ issuePieces[0].url }}">Start reading</a>{% endif %}
+          {%- if pdf %}<a class="btn btn--outline" href="{{ pdf }}" download>{{ icon("download") }}Download the PDF</a>{% endif %}
+        </div>
+      </div>
+      <div class="issue-head-cover">{{ cover(thisIssue, "cover--lg", false) }}</div>
+    </div>
+  </div>
+</section>
+
+{%- if content | trim %}
+<section class="section section--rule" aria-labelledby="note-title">
+  <div class="wrap wrap--narrow">
+    <h2 id="note-title" class="display h-sub">A note from the editors</h2>
+    <div class="prose">{{ content | safe }}</div>
+  </div>
+</section>
+{%- endif %}
+
+{%- if issuePieces.length %}
+<section id="contents" class="section section--contents" aria-labelledby="contents-title" data-contents>
+  <div class="wrap wrap--mid">
+    <div class="section-head">
+      <h2 id="contents-title" class="display h-sub">Contents</h2>
+      {%- set genres = issuePieces | genresIn %}
+      {%- if genres.length > 1 %}
+      <div class="chips" role="group" aria-label="Show contents by type">
+        <button type="button" class="chip" data-filter="All" aria-pressed="true">All <span class="chip-count">{{ issuePieces.length }}</span></button>
+        {%- for g in genres %}
+        <button type="button" class="chip" data-filter="{{ g.name }}" aria-pressed="false">{{ g.name }} <span class="chip-count">{{ g.count }}</span></button>
+        {%- endfor %}
+      </div>
+      {%- endif %}
+    </div>
+    <ul class="toc toc--large">
+      {%- for p in issuePieces %}
+      <li data-genre="{{ p.genre }}">
+        <div class="toc-main">
+          <a class="toc-title" href="{{ p.url }}">{{ p.title }}</a>
+          <p class="toc-by">{{ p.author }}{% if p.school %}, {{ p.school }}{% endif %}</p>
+        </div>
+        <span class="toc-meta">{% if p.featured %}<span class="badge">Featured</span>{% endif %}<span>{{ p.genre }}</span></span>
+      </li>
+      {%- endfor %}
+    </ul>
+  </div>
+</section>
+{%- endif %}
+
+{%- if staff and staff.length %}
+<section class="band-soft" aria-labelledby="staff-title">
+  <div class="wrap wrap--mid">
+    <h2 id="staff-title" class="display h-sub">Staff for this issue</h2>
+    <dl class="staff-list">
+      {%- for s in staff %}
+      <div><dt>{{ s.role }}</dt><dd>{{ s.names }}</dd></div>
+      {%- endfor %}
+    </dl>
+  </div>
+</section>
+{%- endif %}
+
+<nav class="wrap wrap--mid issue-pager" aria-label="More issues">
+  <div class="issue-pager-links">
+    {%- if olderIssue %}<a href="{{ olderIssue.url }}">Previous issue: {{ olderIssue.data.title }}</a>{% endif %}
+    {%- if newerIssue %}<a href="{{ newerIssue.url }}">Next issue: {{ newerIssue.data.title }}</a>{% endif %}
+  </div>
+  <a class="btn btn--outline" href="/archive/">Browse all issues</a>
+</nav>

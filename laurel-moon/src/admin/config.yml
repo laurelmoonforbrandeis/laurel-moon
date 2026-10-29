@@ -1,0 +1,245 @@
+# Decap CMS settings for the Laurel Moon website.
+# This file decides what editors see at /admin/ and where their changes are saved.
+# Docs: https://decapcms.org/docs/configuration-options/
+
+backend:
+  name: github
+  repo: YOUR-GITHUB-ORG/laurel-moon # TODO: the club's GitHub organization and repository
+  branch: main
+  commit_messages:
+    create: 'Add {{collection}} "{{slug}}"'
+    update: 'Update {{collection}} "{{slug}}"'
+    delete: 'Delete {{collection}} "{{slug}}"'
+    uploadMedia: 'Upload "{{path}}"'
+    deleteMedia: 'Delete "{{path}}"'
+
+# Lets someone edit on their own computer with `npm run cms` + `npm start`.
+# It only takes effect on localhost, so it is safe to leave on.
+local_backend: true
+
+# Changes are saved as drafts first, then published. Editors move entries
+# from Drafts to In review to Ready in the Workflow tab, then click Publish.
+publish_mode: editorial_workflow
+
+site_url: https://www.example.org # TODO: the club's domain
+display_url: https://www.example.org # TODO: the club's domain
+logo_url: /assets/img/logo.svg
+
+# Where uploaded images and PDFs are stored.
+media_folder: src/uploads
+public_folder: /uploads
+
+collections:
+  # ---------------------------------------------------------------------------
+  # Issues: one entry per semester
+  # ---------------------------------------------------------------------------
+  - name: issues
+    label: Issues
+    label_singular: Issue
+    description: >-
+      One entry per semester. The issue with the newest publication date becomes the
+      current issue and is featured on the home page.
+    folder: src/issues
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    preview_path: "issues/{{slug}}/"
+    summary: "{{title}}"
+    sortable_fields: [date, title]
+    editor:
+      preview: false
+    fields:
+      - label: Issue name
+        name: title
+        widget: string
+        hint: "Season and year, like Fall 2026. This also becomes the web address, like /issues/fall-2026/"
+      - label: Publication date
+        name: date
+        widget: datetime
+        format: "YYYY-MM-DD"
+        date_format: "MMMM D, YYYY"
+        time_format: false
+        picker_utc: true
+        hint: "Issues are sorted by this date. The newest one is featured on the home page."
+      - label: Theme or subtitle
+        name: subtitle
+        widget: string
+        required: false
+      - label: Edited by
+        name: editors
+        widget: string
+        required: false
+        hint: "Editor-in-chief names, as they should appear."
+      - label: Short introduction
+        name: intro
+        widget: text
+        required: false
+        hint: "Two or three sentences shown on the home page while this is the newest issue."
+      - label: Cover image
+        name: cover_image
+        widget: image
+        required: false
+        choose_url: false
+        hint: "Optional. Without an image, the site draws a moon cover using the color and phase below."
+      - label: Cover image description
+        name: cover_alt
+        widget: string
+        required: false
+        hint: "Describe the cover for people using screen readers."
+      - label: Cover color
+        name: cover_color
+        widget: select
+        default: slate
+        hint: "Used for the drawn moon cover when there is no cover image."
+        options:
+          - { label: Midnight blue, value: midnight }
+          - { label: Slate blue, value: slate }
+          - { label: Laurel green, value: laurel }
+          - { label: Plum, value: plum }
+          - { label: Deep teal, value: teal }
+          - { label: Olive, value: olive }
+      - label: Moon phase
+        name: moon_phase
+        widget: select
+        default: crescent
+        options:
+          - { label: Crescent, value: crescent }
+          - { label: Quarter, value: quarter }
+          - { label: Gibbous, value: gibbous }
+          - { label: Full, value: full }
+      - label: Issue PDF
+        name: pdf
+        widget: file
+        required: false
+        choose_url: false
+        hint: "Optional. Readers get a Download the PDF button."
+      - label: Pieces
+        name: pieces
+        widget: list
+        label_singular: piece
+        required: false
+        collapsed: true
+        summary: "{{fields.title}}, {{fields.author}} ({{fields.genre}})"
+        hint: "Drag pieces to change their order in the table of contents."
+        fields:
+          - { label: Title, name: title, widget: string }
+          - { label: Author or artist, name: author, widget: string }
+          - { label: School, name: school, widget: string, required: false, hint: "Like Brandeis University '27" }
+          - label: Type
+            name: genre
+            widget: select
+            default: Poetry
+            options: [Poetry, Prose, Art]
+          - label: Feature on the home page
+            name: featured
+            widget: boolean
+            default: false
+            required: false
+            hint: "Turn this on for one piece per issue. If none is chosen, the first poem is featured."
+          - label: Text
+            name: text
+            widget: text
+            required: false
+            hint: >-
+              Poems: paste exactly as they should appear. Every line break and space at the start
+              of a line is kept. Prose: leave a blank line between paragraphs.
+              Art: optional statement, like the medium and year.
+          - label: Artwork image
+            name: image
+            widget: image
+            required: false
+            choose_url: false
+            hint: "For art only."
+          - label: Artwork description
+            name: image_alt
+            widget: string
+            required: false
+            hint: "For art only. Describe the image for people using screen readers."
+          - label: Contributor bio
+            name: bio
+            widget: text
+            required: false
+      - label: Staff for this issue
+        name: staff
+        widget: list
+        required: false
+        collapsed: true
+        summary: "{{fields.role}}: {{fields.names}}"
+        fields:
+          - { label: Role, name: role, widget: string }
+          - { label: Names, name: names, widget: string }
+      - label: Note from the editors
+        name: body
+        widget: markdown
+        required: false
+        buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote]
+        editor_components: []
+
+  # ---------------------------------------------------------------------------
+  # Site settings: one file each
+  # ---------------------------------------------------------------------------
+  - name: settings
+    label: Site settings
+    editor:
+      preview: false
+    files:
+      - label: General
+        name: general
+        file: src/_data/site.json
+        fields:
+          - { label: Site name, name: name, widget: string }
+          - { label: Website address, name: url, widget: string, hint: "Like https://www.laurelmoon.org (used for search engines and link previews)." }
+          - { label: Search engine description, name: description, widget: text, hint: "One or two sentences shown in Google results and link previews." }
+          - { label: Footer tagline, name: tagline, widget: string }
+          - { label: About (home page), name: about_short, widget: text, hint: "A short paragraph for the home page." }
+          - { label: About (About page), name: about, widget: markdown, buttons: [bold, italic, link, heading-two, bulleted-list], editor_components: [] }
+          - { label: Staff meetings, name: meetings, widget: string, required: false, hint: "Like: Staff meetings are Tuesdays at 7 p.m. in the student center." }
+          - { label: Club email, name: email, widget: string }
+          - { label: Instagram handle, name: instagram_handle, widget: string, required: false, hint: "Like @laurelmoon" }
+          - { label: Instagram link, name: instagram_url, widget: string, required: false, hint: "The full link to the Instagram profile." }
+
+      - label: Submissions
+        name: submissions
+        file: src/_data/submissions.json
+        fields:
+          - { label: Submissions are open, name: open, widget: boolean, required: false }
+          - { label: Issue taking submissions, name: issue_name, widget: string, hint: "Like Fall 2026" }
+          - { label: Introduction, name: intro, widget: text }
+          - { label: Submission form link, name: submit_url, widget: string, required: false, hint: "Link to the form where people send their work (Google Form, Submittable, and so on)." }
+          - { label: Deadline, name: deadline, widget: string, required: false, hint: "Written out, like Friday, November 6" }
+          - { label: Poetry limit, name: poetry_limit, widget: string, required: false }
+          - { label: Prose limit, name: prose_limit, widget: string, required: false }
+          - { label: Art limit, name: art_limit, widget: string, required: false }
+          - { label: Message when closed, name: closed_message, widget: text, required: false }
+          - { label: Full guidelines, name: guidelines, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list], editor_components: [] }
+
+      - label: Events
+        name: events
+        file: src/_data/calendar.json
+        fields:
+          - label: Events
+            name: events
+            widget: list
+            required: false
+            summary: "{{fields.name}}"
+            hint: "Past events hide themselves automatically, so you only need to tidy this list now and then."
+            fields:
+              - { label: Event name, name: name, widget: string }
+              - { label: Date and time, name: date, widget: datetime, format: "YYYY-MM-DD HH:mm", date_format: "MMMM D, YYYY", time_format: "h:mm A", picker_utc: false }
+              - { label: Location, name: location, widget: string, required: false }
+              - { label: Details, name: details, widget: text, required: false }
+              - { label: Link, name: link, widget: string, required: false, hint: "Optional, like a Facebook event or RSVP form." }
+
+      - label: Staff
+        name: staff
+        file: src/_data/masthead.json
+        fields:
+          - label: Current staff
+            name: roles
+            widget: list
+            required: false
+            summary: "{{fields.role}}: {{fields.names}}"
+            fields:
+              - { label: Role, name: role, widget: string }
+              - { label: Names, name: names, widget: string }

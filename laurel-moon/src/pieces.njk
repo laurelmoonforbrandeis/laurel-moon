@@ -1,0 +1,55 @@
+---
+layout: base.njk
+pagination:
+  data: collections.pieces
+  size: 1
+  alias: piece
+  addAllPagesToCollections: true
+permalink: "{{ piece.url }}"
+---
+{%- from "partials/macros.njk" import poem, icon -%}
+<div class="reader" data-reader>
+  <div class="wrap wrap--narrow reader-inner">
+    <div class="reader-bar">
+      <a class="reader-back" href="{{ piece.issueUrl }}#contents">{{ icon("back") }}{{ piece.issueTitle }} contents</a>
+      <div class="reader-tools" role="group" aria-label="Reading options">
+        <button type="button" data-smaller aria-label="Make text smaller"><span class="tool-a tool-a--sm" aria-hidden="true">A</span></button>
+        <button type="button" data-larger aria-label="Make text larger"><span class="tool-a tool-a--lg" aria-hidden="true">A</span></button>
+        <button type="button" data-night aria-pressed="false">{{ icon("moon") }}Night reading</button>
+        <button type="button" data-copy>{{ icon("link") }}<span data-copy-label aria-live="polite">Copy link</span></button>
+      </div>
+    </div>
+
+    <article class="reader-article" aria-labelledby="piece-title">
+      <p class="reader-kicker">{{ piece.genre }} from the {{ piece.issueTitle }} issue</p>
+      <h1 id="piece-title" class="reader-title">{{ piece.title }}</h1>
+      <p class="byline reader-byline">by {{ piece.author }}{% if piece.school %}, {{ piece.school }}{% endif %}</p>
+      {%- if piece.genre == "Art" %}
+        {%- if piece.image %}<figure class="art-figure"><img src="{{ piece.image }}" alt="{{ piece.image_alt }}"></figure>{% endif %}
+        {%- if piece.text %}<div class="reader-text reader-prose reader-statement">{% for para in piece.text | paragraphs %}<p>{{ para }}</p>{% endfor %}</div>{% endif %}
+      {%- elif piece.genre == "Prose" %}
+        <div class="reader-text reader-prose">{% for para in piece.text | paragraphs %}<p>{{ para }}</p>{% endfor %}</div>
+      {%- else %}
+        {{ poem(piece.text, 0, "reader-text") }}
+      {%- endif %}
+    </article>
+
+    {%- if piece.bio %}
+    <aside class="reader-bio" aria-labelledby="bio-title">
+      <h2 id="bio-title">About the {{ piece.genre | creatorNoun }}</h2>
+      <p>{{ piece.bio }}</p>
+    </aside>
+    {%- endif %}
+
+    <nav class="keep-reading" aria-label="Keep reading">
+      {%- if piece.prev %}
+      <a href="{{ piece.prev.url }}"><span class="kr-label">Previous in this issue</span><span class="kr-title">{{ piece.prev.title }}</span></a>
+      {%- else %}
+      <a href="{{ piece.issueUrl }}#contents"><span class="kr-label">Back to</span><span class="kr-title">All {{ piece.issueTitle }} contents</span></a>
+      {%- endif %}
+      {%- if piece.next %}
+      <a class="kr-next" href="{{ piece.next.url }}"><span class="kr-label">Next in this issue</span><span class="kr-title">{{ piece.next.title }}</span></a>
+      {%- endif %}
+    </nav>
+  </div>
+</div>

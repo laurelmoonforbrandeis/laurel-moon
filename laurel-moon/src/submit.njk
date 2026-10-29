@@ -1,0 +1,36 @@
+---
+layout: base.njk
+title: Submit your work
+permalink: /submit/
+---
+<section class="page-head" aria-labelledby="submit-title">
+  <div class="wrap wrap--mid">
+    {%- if submissions.open %}
+    <h1 id="submit-title" class="page-title page-title--md">Submit to the {{ submissions.issue_name }} issue</h1>
+    <p class="lede">{{ submissions.intro }}</p>
+    <dl class="facts facts--light">
+      {%- if submissions.poetry_limit %}<div><dt>Poetry</dt><dd>{{ submissions.poetry_limit }}</dd></div>{% endif %}
+      {%- if submissions.prose_limit %}<div><dt>Prose</dt><dd>{{ submissions.prose_limit }}</dd></div>{% endif %}
+      {%- if submissions.art_limit %}<div><dt>Art</dt><dd>{{ submissions.art_limit }}</dd></div>{% endif %}
+      {%- if submissions.deadline %}<div><dt>Deadline</dt><dd>{{ submissions.deadline }}</dd></div>{% endif %}
+    </dl>
+    <div class="btn-row">
+      {%- if submissions.submit_url %}
+      <a class="btn btn--laurel" href="{{ submissions.submit_url }}">Submit your work</a>
+      {%- else %}
+      <p class="notice">[Add the submission form link in the editor under Site settings, then Submissions.]</p>
+      {%- endif %}
+    </div>
+    {%- else %}
+    <h1 id="submit-title" class="page-title page-title--md">Submissions are closed for now</h1>
+    <p class="lede">{{ submissions.closed_message }}</p>
+    {%- endif %}
+  </div>
+</section>
+
+<section id="guidelines" class="section section--rule" aria-labelledby="guidelines-title">
+  <div class="wrap wrap--narrow">
+    <h2 id="guidelines-title" class="display h-sub">Guidelines</h2>
+    <div class="prose">{{ submissions.guidelines | md | safe }}</div>
+  </div>
+</section>

@@ -1,0 +1,60 @@
+---
+layout: base.njk
+title: Archive
+description: Every issue of Laurel Moon, Brandeis University's oldest national literary magazine, since fall 1991.
+permalink: /archive/
+---
+{%- from "partials/macros.njk" import cover, icon -%}
+{%- set issues = collections.issuesNewest -%}
+{%- set newest = issues | first -%}
+<div data-archive>
+<section class="page-head page-head--archive" aria-labelledby="archive-title">
+  <div class="wrap">
+    <h1 id="archive-title" class="page-title">The archive</h1>
+    <p class="lede">Every issue of {{ site.name }} since fall 1991, one per semester. Choose a cover to read the issue online or download its PDF.</p>
+    <div class="archive-controls">
+      <div class="search">
+        <label for="issue-search">Find an issue</label>
+        <div class="search-field">
+          {{ icon("search") }}
+          <input id="issue-search" type="search" placeholder="Try a year, like 2008" autocomplete="off" data-archive-search>
+        </div>
+      </div>
+      <div class="chips" role="group" aria-label="Filter by decade">
+        <button type="button" class="chip" data-decade="All" aria-pressed="true">All years</button>
+        {%- for d in issues | decadesOf %}
+        <button type="button" class="chip" data-decade="{{ d }}" aria-pressed="false">{{ d }}</button>
+        {%- endfor %}
+      </div>
+    </div>
+    <p class="archive-count" aria-live="polite" data-archive-count>Showing all {{ issues.length }} {{ "issue" if issues.length == 1 else "issues" }}</p>
+  </div>
+</section>
+
+<section class="section section--flush-top" aria-label="Issues">
+  <div class="wrap">
+    <ul class="issue-grid issue-grid--archive" data-archive-list>
+      {%- for issue in issues %}
+      <li data-issue data-name="{{ issue.data.title | lower }}" data-decade="{{ issue.date | decade }}">
+        <a class="issue-card" href="{{ issue.url }}">{{ cover(issue, "cover--sm") }}<span class="issue-card-name">{{ issue.data.title }}</span>{% if loop.first %}<span class="issue-card-note">Newest issue</span>{% elif loop.last and (issue.date | isoDate) < "1992-01-01" %}<span class="issue-card-note">First issue</span>{% endif %}</a>
+      </li>
+      {%- endfor %}
+    </ul>
+    <div class="empty-state" data-archive-empty hidden>
+      <p class="empty-title">No issues match that search.</p>
+      <p class="empty-help">Search by year, like 2008, or by semester, like fall 2008.</p>
+      <button type="button" class="btn btn--outline" data-archive-clear>Clear the search</button>
+    </div>
+  </div>
+</section>
+</div>
+
+<section class="band-soft" aria-labelledby="scan-title">
+  <div class="wrap band-soft-inner">
+    <div>
+      <h2 id="scan-title" class="display h-small">Have a print copy of an older issue?</h2>
+      <p class="lede">Email us at {{ site.email }} so we can scan it and add it here.</p>
+    </div>
+    {%- if "@" in site.email %}<a class="btn btn--laurel" href="mailto:{{ site.email }}">Email the editors</a>{% endif %}
+  </div>
+</section>

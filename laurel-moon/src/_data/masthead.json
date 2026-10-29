@@ -1,0 +1,10 @@
+{
+  "roles": [
+    { "role": "Editors-in-chief", "names": "[Names]" },
+    { "role": "Poetry editors", "names": "[Names]" },
+    { "role": "Prose editors", "names": "[Names]" },
+    { "role": "Art editors", "names": "[Names]" },
+    { "role": "Design and layout", "names": "[Names]" },
+    { "role": "Readers", "names": "[Names]" }
+  ]
+}

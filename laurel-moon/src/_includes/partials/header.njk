@@ -1,0 +1,22 @@
+{%- set newestIssue = collections.issuesNewest | first -%}
+<header class="site-header">
+  <div class="wrap site-nav">
+    <a class="brand" href="/"{% if page.url == "/" %} aria-current="page"{% endif %}>
+      <span class="moon brand-moon" aria-hidden="true"></span>
+      <span class="brand-name">{{ site.name }}</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+      Menu
+    </button>
+    <nav id="site-menu" class="nav-links" aria-label="Main">
+      {%- if newestIssue %}
+      <a href="{{ newestIssue.url }}"{% if page.url == newestIssue.url %} aria-current="page"{% endif %}>Current issue</a>
+      {%- endif %}
+      <a href="/archive/"{% if page.url == "/archive/" %} aria-current="page"{% endif %}>Archive</a>
+      <a href="/about/"{% if page.url == "/about/" %} aria-current="page"{% endif %}>About</a>
+      <a href="/#events">Events</a>
+      <a class="btn btn--laurel" href="/submit/"{% if page.url == "/submit/" %} aria-current="page"{% endif %}>Submit your work</a>
+    </nav>
+  </div>
+</header>

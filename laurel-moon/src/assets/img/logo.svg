@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96">
+  <mask id="lm-logo-crescent">
+    <rect width="96" height="96" fill="#fff"/>
+    <circle cx="24" cy="48" r="34" fill="#000"/>
+  </mask>
+  <circle cx="48" cy="48" r="34" fill="#B8963A" mask="url(#lm-logo-crescent)"/>
+  <text x="104" y="62" font-family="'Bodoni Moda', Didot, 'Bodoni 72', Georgia, serif" font-size="44" fill="#1C2B24">Laurel Moon</text>
+</svg>

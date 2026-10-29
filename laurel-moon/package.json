@@ -1,0 +1,22 @@
+{
+  "name": "laurel-moon",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Website for Laurel Moon, Brandeis University's oldest national literary magazine.",
+  "type": "module",
+  "scripts": {
+    "start": "eleventy --serve",
+    "build": "eleventy",
+    "cms": "decap-server"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@11ty/eleventy": "^3.1.6",
+    "markdown-it": "^15.0.2"
+  },
+  "devDependencies": {
+    "decap-server": "^3.11.3"
+  }
+}
